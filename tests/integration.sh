@@ -38,6 +38,7 @@ trap cleanup EXIT INT TERM
 "$WCAT" --help | grep 'Relay endpoints:' >/dev/null || fail "relay grammar help"
 "$WCAT" --help | grep -- '--max-clients' >/dev/null || fail "broker limit help"
 "$WCAT" --help | grep -- '--chat' >/dev/null || fail "broker chat help"
+"$WCAT" --help | grep -- '--multi' >/dev/null || fail "multi listen help"
 "$WCAT" --help | grep -- '--quic' >/dev/null || fail "quic help"
 "$WCAT" --help | grep -- '--unix' >/dev/null || fail "unix help"
 "$WCAT" --help | grep 'proxy   \[options\]' >/dev/null || fail "proxy help"
@@ -301,5 +302,34 @@ wait "$limit_a" || true
 grep 'broker client limit reached' "$TMPDIR/broker.limit.err" >/dev/null || fail "broker client limit"
 kill -INT "$limitpid" >/dev/null 2>&1 || true
 ok "broker client limit"
+
+"$WCAT" listen --multi --max-clients 4 127.0.0.1 46123 </dev/null >"$TMPDIR/multi.out" 2>"$TMPDIR/multi.err" &
+multipid=$!
+PIDS="$PIDS $multipid"
+sleep 0.2
+(printf 'multi-a\n'; sleep 0.4) | "$WCAT" connect --timeout 1 127.0.0.1 46123 >"$TMPDIR/multi.a" 2>"$TMPDIR/multi.a.err" || true &
+multi_a=$!
+(printf 'multi-b\n'; sleep 0.4) | "$WCAT" connect --timeout 1 127.0.0.1 46123 >"$TMPDIR/multi.b" 2>"$TMPDIR/multi.b.err" || true &
+multi_b=$!
+wait "$multi_a" || true
+wait "$multi_b" || true
+kill -INT "$multipid" >/dev/null 2>&1 || true
+sleep 0.2
+grep 'multi-a' "$TMPDIR/multi.out" >/dev/null || fail "multi session a"
+grep 'multi-b' "$TMPDIR/multi.out" >/dev/null || fail "multi session b"
+grep '\[session' "$TMPDIR/multi.out" >/dev/null || fail "multi session prefix"
+ok "multi listen sessions"
+
+"$WCAT" listen --multi --max-clients 4 127.0.0.1 46124 </dev/null >"$TMPDIR/multi.http.out" 2>"$TMPDIR/multi.http.err" &
+multihttppid=$!
+PIDS="$PIDS $multihttppid"
+sleep 0.2
+printf 'GET / HTTP/1.1\r\nHost: 127.0.0.1:46124\r\n\r\n' | "$WCAT" connect --timeout 1 127.0.0.1 46124 >"$TMPDIR/multi.http.client" 2>"$TMPDIR/multi.http.client.err" || true
+sleep 0.2
+kill -INT "$multihttppid" >/dev/null 2>&1 || true
+sleep 0.2
+grep 'GET / HTTP' "$TMPDIR/multi.http.out" >/dev/null || fail "multi http request visible"
+grep 'session 1 closed' "$TMPDIR/multi.http.err" >/dev/null || fail "multi http session closed"
+ok "multi closes http sessions"
 
 echo "all integration checks passed"

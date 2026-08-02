@@ -36,6 +36,7 @@ typedef struct {
     bool tls;
     bool tls_verify;
     bool keep_open;
+    bool multi;
     bool verbose;
     bool json;
     bool hex;

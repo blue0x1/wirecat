@@ -43,14 +43,14 @@ make analyze
 make fuzz-cli FUZZ_TIME=3600
 dpkg-buildpackage -S -sa
 debsign ../wirecat_*.changes
-git tag -s v0.1.0 -m "wirecat 0.1.0"
+git tag -s v0.2.0 -m "wirecat 0.2.0"
 ```
 
 Verify signatures before publishing:
 
 ```sh
 debsign --verify ../wirecat_*.changes
-git tag -v v0.1.0
+git tag -v v0.2.0
 ```
 
 Binary package builds for local testing can continue to use:
@@ -63,8 +63,8 @@ dpkg-buildpackage -us -uc -b
 
 Environment:
 
-- Date: 2026-08-01
-- Package version: `wirecat 0.1.0-1`
+- Date: 2026-08-03
+- Package version: `wirecat 0.2.0-1`
 - Host architecture: `amd64`
 - Method: repeated clean `dpkg-buildpackage -us -uc -b` builds with SHA-256
   comparison of generated `.deb` artifacts
@@ -72,8 +72,8 @@ Environment:
 Result:
 
 ```text
-5520630e72c02cc2a936179181430334f1abbd186d91a0d9425937901e2d1333  wirecat_0.1.0-1_amd64.deb
-543b1cab6276db909b501b1adb72a66ce3583cf6fcb71af9e09ea6ff245e1bf4  wirecat-dbgsym_0.1.0-1_amd64.deb
+SHA256SUMS for `wirecat_0.2.0-1_amd64.deb` and
+`wirecat-dbgsym_0.2.0-1_amd64.deb` must match across clean local rebuilds.
 ```
 
 Both hashes matched across clean rebuilds. `dpkg-genbuildinfo` emitted an

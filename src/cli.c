@@ -48,6 +48,8 @@ static int parse_common(int argc, char **argv, int *idx, wcat_config *cfg)
         cfg->family = AF_INET6;
     } else if (strcmp(arg, "-k") == 0 || strcmp(arg, "--keep-open") == 0) {
         cfg->keep_open = true;
+    } else if (strcmp(arg, "--multi") == 0) {
+        cfg->multi = true;
     } else if (strcmp(arg, "-v") == 0 || strcmp(arg, "--verbose") == 0) {
         cfg->verbose = true;
     } else if (strcmp(arg, "--json") == 0) {
@@ -279,6 +281,11 @@ int wcat_parse_args(int argc, char **argv, wcat_config *cfg)
     if (cfg->chat && cfg->mode != WCAT_MODE_BROKER) {
         return -1;
     }
+    if (cfg->multi &&
+        (cfg->mode != WCAT_MODE_LISTEN || cfg->udp || cfg->tls || cfg->quic ||
+         cfg->exec_path != NULL || cfg->keep_open)) {
+        return -1;
+    }
     if ((cfg->client_cert_file == NULL) != (cfg->client_key_file == NULL)) {
         return -1;
     }
@@ -308,6 +315,7 @@ void wcat_print_help(const char *argv0)
     printf("  -4                    force IPv4\n");
     printf("  -6                    force IPv6\n");
     printf("  -k, --keep-open       accept sequential clients\n");
+    printf("      --multi           listen for concurrent raw stream sessions\n");
     printf("  -v, --verbose         verbose logs\n");
     printf("      --json            JSON logs\n");
     printf("      --hex             hex dump traffic\n");
@@ -331,7 +339,7 @@ void wcat_print_help(const char *argv0)
     printf("      --proxy URL       socks5://host:port or http://host:port\n");
     printf("      --exec PATH       bridge connection to process\n");
     printf("      --pty             use POSIX PTY for --exec\n");
-    printf("      --max-clients N   broker client limit, 1-256 (default 64)\n");
+    printf("      --max-clients N   broker/multi client limit, 1-256 (default 64)\n");
     printf("      --broker-buffer N broker per-client output buffer bytes\n");
     printf("      --allow LIST      accept only IP/CIDR peers in comma list\n");
     printf("      --deny LIST       reject IP/CIDR peers in comma list\n");
@@ -347,6 +355,7 @@ void wcat_print_help(const char *argv0)
     printf("\nExamples:\n");
     printf("  %s connect example.com 80\n", argv0);
     printf("  %s listen --keep-open 0.0.0.0 4444\n", argv0);
+    printf("  %s listen --multi 0.0.0.0 4444\n", argv0);
     printf("  %s connect --tls example.com 443\n", argv0);
     printf("  %s connect --quic --alpn h3 example.com 443\n", argv0);
     printf("  %s connect --tls-insecure 127.0.0.1 8443\n", argv0);

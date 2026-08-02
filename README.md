@@ -17,6 +17,7 @@ sessions across modern Linux/POSIX transports.**
 
 It provides a compact command-line interface for secure connections, local and remote relays, proxy workflows, file transfer, interactive process sessions, and automation-friendly diagnostics.
 
+Current release: [`0.2.0`](https://github.com/blue0x1/wirecat/releases/tag/v0.2.0)
 
 
 ## Install
@@ -27,14 +28,14 @@ Download packages and archives from the
 Debian/Kali/Ubuntu amd64:
 
 ```sh
-sudo apt install ./wirecat_0.1.0-1_amd64.deb
+sudo apt install ./wirecat_0.2.0-1_amd64.deb
 ```
 
 Standalone Linux amd64:
 
 ```sh
-tar -xzf wirecat-0.1.0-linux-amd64.tar.gz
-sudo install -m 0755 wirecat-0.1.0-linux-amd64/wcat /usr/local/bin/wcat
+tar -xzf wirecat-0.2.0-linux-amd64.tar.gz
+sudo install -m 0755 wirecat-0.2.0-linux-amd64/wcat /usr/local/bin/wcat
 wcat --version
 ```
 
@@ -54,7 +55,7 @@ make test
 | Security | TLS, mTLS, default client verification, custom CA/SNI/ALPN |
 | Modern protocols | QUIC single-stream transport with OpenSSL QUIC APIs |
 | Proxying | SOCKS5, HTTP CONNECT client mode, HTTP CONNECT proxy server |
-| Sessions | stdio relay, `--exec`, POSIX PTY, shell-friendly interactive handling |
+| Sessions | stdio relay, `--exec`, POSIX PTY, multi-client control, attach/detach shells |
 | Movement | file send/receive, file relay endpoint, hex inspection |
 | Coordination | broker/chat mode, labels, control-byte escaping, client limits |
 | Automation | JSON logs, clear exit codes, timeouts, signal handling, CIDR allow/deny |
@@ -71,6 +72,13 @@ packaging. TLS and QUIC support are provided through OpenSSL; QUIC requires an
 OpenSSL build that exposes the QUIC APIs.
 
 ## Release Assets
+
+The `0.2.0` release provides:
+
+- Debian package: `wirecat_0.2.0-1_amd64.deb`
+- Standalone Linux amd64 archive: `wirecat-0.2.0-linux-amd64.tar.gz`
+- Source archive: `wirecat-0.2.0-source.tar.gz`
+- Checksums: `SHA256SUMS`
 
 Release notes are in [RELEASE.md](RELEASE.md).
 

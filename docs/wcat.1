@@ -1,4 +1,4 @@
-.TH WCAT 1 "August 2026" "wcat 0.1.0" "User Commands"
+.TH WCAT 1 "August 2026" "wcat 0.2.0" "User Commands"
 .SH NAME
 wcat \- native stream and session utility
 .SH SYNOPSIS
@@ -28,7 +28,7 @@ wcat \- native stream and session utility
 .B wcat
 connects, listens, relays, proxies, transfers files, and bridges local
 processes or PTY sessions to network streams.
-Version 0.1.0 is authored by Chokri Hammedi (blue0x1).
+Version 0.2.0 is authored by Chokri Hammedi (blue0x1).
 .SH OPTIONS
 .TP
 .B --version
@@ -45,6 +45,10 @@ Force IPv6.
 .TP
 .B \-k, --keep-open
 Accept sequential clients.
+.TP
+.B --multi
+In listen mode, accept concurrent raw stream sessions and expose the
+interactive session control prompt.
 .TP
 .B \-v, --verbose
 Enable verbose logging.
@@ -124,7 +128,7 @@ kernel.
 Use Linux AF_VSOCK stream sockets. In listen mode, HOST may be any.
 .TP
 .BI --max-clients " N"
-Set the broker client limit, from 1 to 256. The default is 64.
+Set the broker or multi-listen client limit, from 1 to 256. The default is 64.
 .TP
 .BI --broker-buffer " N"
 Set the broker per-client output buffer in bytes. Slow clients are dropped

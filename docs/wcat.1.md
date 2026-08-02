@@ -27,7 +27,7 @@ wcat - modern native stream and session utility
 `wcat` connects, listens, relays, proxies, transfers files, and bridges
 processes or PTYs to network streams.
 
-Version 0.1.0 is authored by Chokri Hammedi (`blue0x1`).
+Version 0.2.0 is authored by Chokri Hammedi (`blue0x1`).
 
 ## OPTIONS
 
@@ -45,6 +45,10 @@ Version 0.1.0 is authored by Chokri Hammedi (`blue0x1`).
 
 `-k`, `--keep-open`
 : Keep a listener open for sequential clients.
+
+`--multi`
+: In listen mode, accept concurrent raw stream sessions and expose the
+  interactive session control prompt.
 
 `-v`, `--verbose`
 : Enable verbose logging.
@@ -124,7 +128,8 @@ Interactive shell sessions should use `--pty --exec PATH`, including QUIC
 sessions.
 
 `--max-clients N`
-: Set the broker client limit, from `1` to `256`. The default is `64`.
+: Set the broker or multi-listen client limit, from `1` to `256`. The default
+  is `64`.
 
 `--broker-buffer N`
 : Set the broker per-client output buffer in bytes. Slow clients are dropped

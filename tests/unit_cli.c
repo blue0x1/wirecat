@@ -38,6 +38,7 @@ int main(void)
     char *quic_argv[] = {"wcat", "connect", "--quic", "--alpn", "h3",
                          "service.local", "443"};
     char *listen_argv[] = {"wcat", "listen", "--keep-open", "0.0.0.0", "4444"};
+    char *multi_argv[] = {"wcat", "listen", "--multi", "0.0.0.0", "4444"};
     char *relay_argv[] = {"wcat", "relay", "stdio", "exec:/usr/bin/tee"};
     char *broker_argv[] = {"wcat", "broker", "--max-clients", "8",
                            "--broker-buffer", "32768", "127.0.0.1", "5555"};
@@ -56,6 +57,10 @@ int main(void)
     char *buffer_bad[] = {"wcat", "broker", "--broker-buffer", "12",
                           "127.0.0.1", "5555"};
     char *chat_bad[] = {"wcat", "connect", "--chat", "127.0.0.1", "5555"};
+    char *multi_bad[] = {"wcat", "listen", "--multi", "--exec", "/bin/sh",
+                         "127.0.0.1", "4444"};
+    char *multi_tls_bad[] = {"wcat", "listen", "--multi", "--tls",
+                             "127.0.0.1", "4444"};
     char *unix_bad[] = {"wcat", "connect", "--unix", "/tmp/wcat.sock", "1"};
     char *proxy_sctp_bad[] = {"wcat", "connect", "--sctp", "--proxy",
                               "http://127.0.0.1:3128", "127.0.0.1", "5555"};
@@ -69,6 +74,7 @@ int main(void)
     parse_ok(connect_argv, 9, WCAT_MODE_CONNECT, "tls connect");
     parse_ok(quic_argv, 7, WCAT_MODE_CONNECT, "quic connect");
     parse_ok(listen_argv, 5, WCAT_MODE_LISTEN, "keep-open listen");
+    parse_ok(multi_argv, 5, WCAT_MODE_LISTEN, "multi listen");
     parse_ok(relay_argv, 4, WCAT_MODE_RELAY, "relay");
     parse_ok(broker_argv, 8, WCAT_MODE_BROKER, "broker limits");
     parse_ok(chat_argv, 5, WCAT_MODE_BROKER, "broker chat");
@@ -83,6 +89,8 @@ int main(void)
     check(cfg.broker_buffer_bytes == 32768, "broker buffer value");
     check(cfg.family == AF_UNSPEC, "default family");
     check(cfg.tls_verify, "tls verify default");
+    (void)wcat_parse_args(5, multi_argv, &cfg);
+    check(cfg.multi, "multi listen value");
     (void)wcat_parse_args(5, chat_argv, &cfg);
     check(cfg.chat, "broker chat value");
     (void)wcat_parse_args(4, unix_argv, &cfg);
@@ -94,6 +102,8 @@ int main(void)
     parse_bad(clients_bad, 6, "bad max clients reject");
     parse_bad(buffer_bad, 6, "bad broker buffer reject");
     parse_bad(chat_bad, 5, "chat outside broker reject");
+    parse_bad(multi_bad, 7, "multi with exec reject");
+    parse_bad(multi_tls_bad, 6, "multi with tls reject");
     parse_bad(unix_bad, 5, "unix extra arg reject");
     parse_bad(proxy_sctp_bad, 7, "proxy over sctp reject");
     parse_bad(acl_bad, 6, "bad allow cidr reject");

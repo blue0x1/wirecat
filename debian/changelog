@@ -1,3 +1,11 @@
+wirecat (0.2.0-1) unstable; urgency=medium
+
+  * Add multi-client listen mode with session control commands.
+  * Add attach/detach flow, prompt editing, and command history handling.
+  * Print HTTP probes in multi mode without keeping them as sessions.
+
+ -- Chokri Hammedi (blue0x1) <blue0x1@users.noreply.github.com>  Mon, 03 Aug 2026 00:00:00 +0300
+
 wirecat (0.1.0-1) unstable; urgency=medium
 
   * Initial release.
