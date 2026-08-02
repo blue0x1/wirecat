@@ -2,7 +2,6 @@
 
 [![CI](https://github.com/blue0x1/wirecat/actions/workflows/ci.yml/badge.svg)](https://github.com/blue0x1/wirecat/actions/workflows/ci.yml)
 [![Release](https://img.shields.io/github/v/release/blue0x1/wirecat?sort=semver)](https://github.com/blue0x1/wirecat/releases/latest)
-[![Latest Downloads](https://img.shields.io/github/downloads/blue0x1/wirecat/latest/total)](https://github.com/blue0x1/wirecat/releases/latest)
 [![Total Downloads](https://img.shields.io/github/downloads/blue0x1/wirecat/total)](https://github.com/blue0x1/wirecat/releases)
 [![License](https://img.shields.io/github/license/blue0x1/wirecat)](LICENSE)
 [![Language](https://img.shields.io/badge/language-C-555555.svg)](https://github.com/blue0x1/wirecat)
@@ -16,9 +15,6 @@ It combines a netcat-style command surface with TLS/mTLS, QUIC, Unix sockets,
 SCTP, VSOCK, proxy support, PTY-backed execution, broker/chat mode, JSON logs,
 and hex inspection.
 
-Current release: [`0.1.0`](https://github.com/blue0x1/wirecat/releases/tag/v0.1.0)
-
-Author: [Chokri Hammedi (`blue0x1`)](https://github.com/blue0x1)
 
 ## Install
 
@@ -340,3 +336,5 @@ and verify reproducible build output as described in
 ## License
 
 Wirecat is released under the [MIT License](LICENSE).
+
+Author: [Chokri Hammedi (`blue0x1`)](https://github.com/blue0x1)
