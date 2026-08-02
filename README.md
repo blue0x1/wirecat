@@ -1,19 +1,21 @@
-# Wirecat
+<img width="1408" height="768" alt="Wirecat" src="https://github.com/user-attachments/assets/ec20e574-b749-4368-a934-e99a2b9ca066" />
 
-[![CI](https://github.com/blue0x1/wirecat/actions/workflows/ci.yml/badge.svg)](https://github.com/blue0x1/wirecat/actions/workflows/ci.yml)
-[![Release](https://img.shields.io/github/v/release/blue0x1/wirecat?sort=semver)](https://github.com/blue0x1/wirecat/releases/latest)
-[![Total Downloads](https://img.shields.io/github/downloads/blue0x1/wirecat/total)](https://github.com/blue0x1/wirecat/releases)
-[![License](https://img.shields.io/github/license/blue0x1/wirecat)](LICENSE)
-[![Language](https://img.shields.io/badge/language-C-555555.svg)](https://github.com/blue0x1/wirecat)
-[![Platform](https://img.shields.io/badge/platform-Linux%20%7C%20POSIX-informational)](README.md)
+  <p align="center">
+    <a href="https://github.com/blue0x1/wirecat/actions/workflows/ci.yml"><img src="https://github.com/blue0x1/wirecat/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
+    <a href="https://github.com/blue0x1/wirecat/releases/latest"><img src="https://img.shields.io/github/v/release/blue0x1/wirecat?sort=semver" alt="Release"></a>
+    <a href="https://github.com/blue0x1/wirecat/releases"><img src="https://img.shields.io/github/downloads/blue0x1/wirecat/total" alt="Total Downloads"></a>
+    <a href="LICENSE"><img src="https://img.shields.io/github/license/blue0x1/wirecat" alt="License"></a>
+    <a href="https://github.com/blue0x1/wirecat"><img src="https://img.shields.io/badge/language-C-555555.svg" alt="Language"></a>
+    <a href="README.md"><img src="https://img.shields.io/badge/platform-Linux%20%7C%20POSIX-informational" alt="Platform"></a>
+  </p>
+
 
 **Wirecat (`wcat`) is a native C stream and session utility for connecting,
 listening, relaying, proxying, transferring files, and handling interactive
 sessions across modern Linux/POSIX transports.**
 
-It combines a netcat-style command surface with TLS/mTLS, QUIC, Unix sockets,
-SCTP, VSOCK, proxy support, PTY-backed execution, broker/chat mode, JSON logs,
-and hex inspection.
+It provides a compact command-line interface for secure connections, local and remote relays, proxy workflows, file transfer, interactive process sessions, and automation-friendly diagnostics.
+
 
 
 ## Install
