@@ -1,6 +1,7 @@
 <img width="1408" height="768" alt="Wirecat" src="https://github.com/user-attachments/assets/ec20e574-b749-4368-a934-e99a2b9ca066" />
 
   <p align="center">
+    <a href="https://github.com/blue0x1/wirecat/wiki"><img src="https://img.shields.io/badge/docs-wiki-blue" alt="Wiki"></a>
     <a href="https://github.com/blue0x1/wirecat/actions/workflows/ci.yml"><img src="https://github.com/blue0x1/wirecat/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
     <a href="https://github.com/blue0x1/wirecat/releases/latest"><img src="https://img.shields.io/github/v/release/blue0x1/wirecat?sort=semver" alt="Release"></a>
     <a href="https://github.com/blue0x1/wirecat/releases"><img src="https://img.shields.io/github/downloads/blue0x1/wirecat/total" alt="Total Downloads"></a>
