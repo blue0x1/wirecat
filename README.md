@@ -71,13 +71,6 @@ OpenSSL build that exposes the QUIC APIs.
 
 ## Release Assets
 
-The `0.1.0` release provides:
-
-- Debian package: `wirecat_0.1.0-1_amd64.deb`
-- Standalone Linux amd64 archive: `wirecat-0.1.0-linux-amd64.tar.gz`
-- Source archive: `wirecat-0.1.0-source.tar.gz`
-- Checksums: `SHA256SUMS`
-
 Release notes are in [RELEASE.md](RELEASE.md).
 
 ## Build
