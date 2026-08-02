@@ -4,6 +4,12 @@ Wirecat is a general-purpose stream and session utility. It does not include
 persistence, stealth, autonomous operation, embedded scripting, or framework
 behavior.
 
+Use Wirecat only on systems and networks that you own, administer, or have
+explicit permission to test. The project is provided for lawful administration,
+debugging, research, and educational use. The author and contributors are not
+responsible for misuse, damage, unauthorized access, policy violations, or
+illegal activity performed with Wirecat.
+
 ## Supported Versions
 
 The `main` branch receives security fixes until formal release branches are

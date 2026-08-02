@@ -314,6 +314,16 @@ file movement.
 It intentionally avoids C2 framework behavior, persistence, stealth, offensive
 automation, and embedded scripting.
 
+## Responsible Use
+
+Use Wirecat only on systems and networks that you own, administer, or have
+explicit permission to test. The project is provided for lawful administration,
+debugging, research, and educational use.
+
+You are responsible for how you use this software. The author and contributors
+are not responsible for misuse, damage, unauthorized access, policy violations,
+or illegal activity performed with Wirecat.
+
 ## Packaging
 
 The `debian/` directory contains packaging metadata for Debian/Kali-style
