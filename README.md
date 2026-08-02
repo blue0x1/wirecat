@@ -1,34 +1,86 @@
 # Wirecat
 
-Wirecat (`wcat`) is a modern native stream and session utility for networking,
-debugging, secure relays, shell handling, and file movement. It is designed for
-short commands, predictable behavior, strong interactive handling, and
-automation-friendly output.
+[![CI](https://github.com/blue0x1/wirecat/actions/workflows/ci.yml/badge.svg)](https://github.com/blue0x1/wirecat/actions/workflows/ci.yml)
+[![Release](https://img.shields.io/github/v/release/blue0x1/wirecat?sort=semver)](https://github.com/blue0x1/wirecat/releases/latest)
+[![Latest Downloads](https://img.shields.io/github/downloads/blue0x1/wirecat/latest/total)](https://github.com/blue0x1/wirecat/releases/latest)
+[![Total Downloads](https://img.shields.io/github/downloads/blue0x1/wirecat/total)](https://github.com/blue0x1/wirecat/releases)
+[![License](https://img.shields.io/github/license/blue0x1/wirecat)](LICENSE)
+[![Language](https://img.shields.io/badge/language-C-555555.svg)](https://github.com/blue0x1/wirecat)
+[![Platform](https://img.shields.io/badge/platform-Linux%20%7C%20POSIX-informational)](README.md)
 
-Current release: `0.1.0`
+**Wirecat (`wcat`) is a native C stream and session utility for connecting,
+listening, relaying, proxying, transferring files, and handling interactive
+sessions across modern Linux/POSIX transports.**
 
-Author: Chokri Hammedi (`blue0x1`)
+It combines a netcat-style command surface with TLS/mTLS, QUIC, Unix sockets,
+SCTP, VSOCK, proxy support, PTY-backed execution, broker/chat mode, JSON logs,
+and hex inspection.
 
-This repository is a production-oriented implementation in C. The code is
-intentionally modular, POSIX-first, dependency-conscious, and structured for
-Debian/Kali packaging.
+Current release: [`0.1.0`](https://github.com/blue0x1/wirecat/releases/tag/v0.1.0)
 
-## Goals
+Author: [Chokri Hammedi (`blue0x1`)](https://github.com/blue0x1)
 
-- One native CLI binary with predictable behavior.
-- Clean TCP, UDP, SCTP, Unix domain socket, and Linux VSOCK client/listener
-  modes.
-- IPv4 and IPv6 via `getaddrinfo(3)`.
-- TLS client and server support through OpenSSL, with client verification
-  enabled by default.
-- SOCKS5 and HTTP CONNECT proxy support for outbound TCP connections.
-- HTTP CONNECT proxy server mode.
-- Bidirectional relay primitives for sockets, files, processes, and PTYs.
-- Stable PTY-backed shell sessions on Linux.
-- Keep-open listeners for sequential clients.
-- Basic chat/broker mode with optional client labels and control-byte escaping.
-- Human-readable logs by default, JSON logs for automation.
-- Clear exit codes, signal handling, and timeout controls.
+## Install
+
+Download packages and archives from the
+[latest release](https://github.com/blue0x1/wirecat/releases/latest).
+
+Debian/Kali/Ubuntu amd64:
+
+```sh
+sudo apt install ./wirecat_0.1.0-1_amd64.deb
+```
+
+Standalone Linux amd64:
+
+```sh
+tar -xzf wirecat-0.1.0-linux-amd64.tar.gz
+sudo install -m 0755 wirecat-0.1.0-linux-amd64/wcat /usr/local/bin/wcat
+wcat --version
+```
+
+Build from source:
+
+```sh
+sudo apt install build-essential pkg-config libssl-dev
+make
+make test
+```
+
+## Capabilities
+
+| Area | Support |
+| --- | --- |
+| Transports | TCP, UDP, SCTP, Unix domain sockets, Linux VSOCK, IPv4, IPv6 |
+| Security | TLS, mTLS, default client verification, custom CA/SNI/ALPN |
+| Modern protocols | QUIC single-stream transport with OpenSSL QUIC APIs |
+| Proxying | SOCKS5, HTTP CONNECT client mode, HTTP CONNECT proxy server |
+| Sessions | stdio relay, `--exec`, POSIX PTY, shell-friendly interactive handling |
+| Movement | file send/receive, file relay endpoint, hex inspection |
+| Coordination | broker/chat mode, labels, control-byte escaping, client limits |
+| Automation | JSON logs, clear exit codes, timeouts, signal handling, CIDR allow/deny |
+
+## Why Wirecat
+
+Wirecat is built as one small native binary with predictable behavior and no
+runtime language dependency. The focus is practical operator workflows:
+transport inspection, secure relays, controlled shell/process bridging, file
+movement, and automation-friendly logging.
+
+It is POSIX-first, dependency-conscious, and structured for Debian/Kali
+packaging. TLS and QUIC support are provided through OpenSSL; QUIC requires an
+OpenSSL build that exposes the QUIC APIs.
+
+## Release Assets
+
+The `0.1.0` release provides:
+
+- Debian package: `wirecat_0.1.0-1_amd64.deb`
+- Standalone Linux amd64 archive: `wirecat-0.1.0-linux-amd64.tar.gz`
+- Source archive: `wirecat-0.1.0-source.tar.gz`
+- Checksums: `SHA256SUMS`
+
+Release notes are in [RELEASE.md](RELEASE.md).
 
 ## Build
 
@@ -59,170 +111,9 @@ On Debian/Kali:
 sudo apt install build-essential pkg-config libssl-dev
 ```
 
-## Quick Examples
+## Usage
 
-TCP client:
-
-```sh
-wcat connect example.com 80
-```
-
-Version:
-
-```sh
-wcat --version
-```
-
-TCP listener:
-
-```sh
-wcat listen 0.0.0.0 4444
-```
-
-Keep-open listener:
-
-```sh
-wcat listen --keep-open 0.0.0.0 4444
-```
-
-TLS client:
-
-```sh
-wcat connect --tls example.com 443
-```
-
-QUIC client:
-
-```sh
-wcat connect --quic --alpn h3 example.com 443
-```
-
-TLS client with a private CA bundle:
-
-```sh
-wcat connect --tls --ca-file ./ca.pem --sni service.example service.example 443
-```
-
-TLS client with a certificate:
-
-```sh
-wcat connect --tls --ca-file ./ca.pem --sni service.example --client-cert client.crt --client-key client.key service.example 443
-```
-
-TLS server:
-
-```sh
-wcat listen --tls --cert server.crt --key server.key 0.0.0.0 8443
-```
-
-TLS server requiring client certificates:
-
-```sh
-wcat listen --tls --require-client-cert --ca-file ./clients-ca.pem --cert server.crt --key server.key 0.0.0.0 8443
-```
-
-QUIC listener for another `wcat` peer:
-
-```sh
-wcat listen --quic --cert server.crt --key server.key 0.0.0.0 8443
-```
-
-QUIC PTY-backed shell listener:
-
-```sh
-wcat listen --quic --tls-insecure --cert server.crt --key server.key --pty --exec /bin/bash 127.0.0.1 8443
-```
-
-Listener restricted to a peer range:
-
-```sh
-wcat listen --allow 192.0.2.0/24 0.0.0.0 4444
-```
-
-SOCKS5 proxy:
-
-```sh
-wcat connect --proxy socks5://127.0.0.1:9050 example.com 80
-```
-
-HTTP CONNECT proxy:
-
-```sh
-wcat connect --proxy http://proxy.local:8080 example.com 443
-```
-
-HTTP CONNECT proxy server:
-
-```sh
-wcat proxy 127.0.0.1 3128
-```
-
-Unix domain socket:
-
-```sh
-wcat listen --unix --exec /usr/bin/tee /tmp/wcat.sock
-wcat connect --unix /tmp/wcat.sock
-```
-
-SCTP stream socket:
-
-```sh
-wcat listen --sctp 0.0.0.0 5555
-wcat connect --sctp 127.0.0.1 5555
-```
-
-Linux VSOCK stream socket:
-
-```sh
-wcat listen --vsock any 5555
-wcat connect --vsock 2 5555
-```
-
-PTY-backed shell listener:
-
-```sh
-wcat listen --pty --exec /bin/bash 0.0.0.0 4444
-```
-
-File send:
-
-```sh
-wcat send ./archive.tar 192.0.2.10 9000
-```
-
-File receive:
-
-```sh
-wcat recv ./archive.tar 0.0.0.0 9000
-```
-
-Chat broker:
-
-```sh
-wcat broker 0.0.0.0 5555
-```
-
-Chat broker with client labels and control-byte escaping:
-
-```sh
-wcat broker --chat 0.0.0.0 5555
-```
-
-Broker with explicit limits:
-
-```sh
-wcat broker --chat --max-clients 16 --broker-buffer 131072 0.0.0.0 5555
-```
-
-JSON logging and hex dump:
-
-```sh
-wcat connect --json --hex example.com 80
-```
-
-## CLI Shape
-
-Wirecat uses subcommands for the major workflows:
+Wirecat uses subcommands for the main workflows:
 
 ```text
 wcat connect [options] HOST PORT
@@ -268,6 +159,84 @@ Common options:
 --broker-buffer N          broker per-client output buffer bytes
 --allow LIST               accept only IP/CIDR peers in comma list
 --deny LIST                reject IP/CIDR peers in comma list
+```
+
+## Examples
+
+Basic TCP:
+
+```sh
+wcat connect example.com 80
+wcat --version
+wcat listen 0.0.0.0 4444
+wcat listen --keep-open 0.0.0.0 4444
+```
+
+TLS and QUIC:
+
+```sh
+wcat connect --tls example.com 443
+wcat connect --quic --alpn h3 example.com 443
+wcat connect --tls --ca-file ./ca.pem --sni service.example service.example 443
+wcat connect --tls --ca-file ./ca.pem --sni service.example --client-cert client.crt --client-key client.key service.example 443
+wcat listen --tls --cert server.crt --key server.key 0.0.0.0 8443
+wcat listen --tls --require-client-cert --ca-file ./clients-ca.pem --cert server.crt --key server.key 0.0.0.0 8443
+wcat listen --quic --cert server.crt --key server.key 0.0.0.0 8443
+wcat listen --quic --tls-insecure --cert server.crt --key server.key --pty --exec /bin/bash 127.0.0.1 8443
+```
+
+Access control:
+
+```sh
+wcat listen --allow 192.0.2.0/24 0.0.0.0 4444
+wcat listen --deny 198.51.100.0/24 0.0.0.0 4444
+```
+
+Proxying:
+
+```sh
+wcat connect --proxy socks5://127.0.0.1:9050 example.com 80
+wcat connect --proxy http://proxy.local:8080 example.com 443
+wcat proxy 127.0.0.1 3128
+```
+
+Local and specialized transports:
+
+```sh
+wcat listen --unix --exec /usr/bin/tee /tmp/wcat.sock
+wcat connect --unix /tmp/wcat.sock
+wcat listen --sctp 0.0.0.0 5555
+wcat connect --sctp 127.0.0.1 5555
+wcat listen --vsock any 5555
+wcat connect --vsock 2 5555
+```
+
+PTY-backed execution:
+
+```sh
+wcat listen --pty --exec /bin/bash 0.0.0.0 4444
+wcat listen --quic --tls-insecure --cert server.crt --key server.key --pty --exec /bin/bash 127.0.0.1 8443
+```
+
+File movement:
+
+```sh
+wcat send ./archive.tar 192.0.2.10 9000
+wcat recv ./archive.tar 0.0.0.0 9000
+```
+
+Broker/chat:
+
+```sh
+wcat broker 0.0.0.0 5555
+wcat broker --chat 0.0.0.0 5555
+wcat broker --chat --max-clients 16 --broker-buffer 131072 0.0.0.0 5555
+```
+
+Automation and inspection:
+
+```sh
+wcat connect --json --hex example.com 80
 ```
 
 ## Relay Endpoint Grammar
@@ -320,26 +289,44 @@ wcat relay --hex --timeout 10 tcp:127.0.0.1:8000 file:./trace.bin
 
 ## Project Layout
 
-See [docs/architecture.md](docs/architecture.md) for the architecture plan,
-feature mapping, and implementation roadmap.
+```text
+include/     shared project headers
+src/         implementation modules
+tests/       unit, integration, and fuzz harness sources
+docs/        architecture, logging, fuzzing, reproducible build notes, man page
+debian/      Debian packaging metadata
+```
 
-See [docs/json-logging.md](docs/json-logging.md) for the structured log schema.
+More documentation:
 
-See [docs/fuzzing.md](docs/fuzzing.md) for fuzzing commands, seed corpus
-details, and release fuzz expectations.
-
-See [docs/reproducible-builds.md](docs/reproducible-builds.md) for package
-determinism checks and release signing steps.
+- [Architecture](docs/architecture.md)
+- [JSON logging schema](docs/json-logging.md)
+- [Fuzzing](docs/fuzzing.md)
+- [Reproducible builds and signing](docs/reproducible-builds.md)
+- [Manual page](docs/wcat.1.md)
 
 ## Security Positioning
 
-Wirecat is a general network utility. Version 1 explicitly avoids C2 framework
-behavior, persistence, stealth, offensive automation, and embedded scripting.
-The useful security-professional workflows are standard transport inspection,
-debugging, secure relays, controlled shell/process bridging, and file movement.
+Wirecat is a general network utility. It is intended for standard transport
+inspection, debugging, secure relays, controlled shell/process bridging, and
+file movement.
+
+It intentionally avoids C2 framework behavior, persistence, stealth, offensive
+automation, and embedded scripting.
 
 ## Packaging
 
-The `debian/` directory contains packaging metadata prepared for review. Before
-upload to a distribution, finalize maintainer identity, changelog versioning,
-and reproducible build checks.
+The `debian/` directory contains packaging metadata for Debian/Kali-style
+builds. Build packages with:
+
+```sh
+dpkg-buildpackage -us -uc -b
+```
+
+Before distribution upload, sign release artifacts with the maintainer GPG key
+and verify reproducible build output as described in
+[docs/reproducible-builds.md](docs/reproducible-builds.md).
+
+## License
+
+Wirecat is released under the [MIT License](LICENSE).
