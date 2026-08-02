@@ -1,0 +1,48 @@
+name: ci
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  build-test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        cc: [gcc, clang]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install dependencies
+        run: sudo apt-get update && sudo apt-get install -y build-essential clang pkg-config libssl-dev openssl debhelper dpkg-dev
+      - name: Build
+        run: make CC=${{ matrix.cc }}
+      - name: Test
+        run: make test
+
+      - name: Static analysis
+        if: matrix.cc == 'clang'
+        run: make analyze
+
+  sanitizers:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install dependencies
+        run: sudo apt-get update && sudo apt-get install -y build-essential pkg-config libssl-dev openssl
+      - name: Build with sanitizers
+        run: make asan
+      - name: Test with sanitizers
+        run: make test
+
+      - name: Build fuzz harness
+        run: make fuzz-harness
+
+  debian-package:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install dependencies
+        run: sudo apt-get update && sudo apt-get install -y build-essential pkg-config libssl-dev debhelper dpkg-dev
+      - name: Build package
+        run: dpkg-buildpackage -us -uc -b

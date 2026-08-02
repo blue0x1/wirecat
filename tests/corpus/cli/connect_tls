@@ -1,0 +1,1 @@
+wcat connect --tls --ca-file ca.pem --sni service.local service.local 443

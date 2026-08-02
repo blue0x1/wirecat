@@ -1,0 +1,1 @@
+wcat broker --max-clients 16 --broker-buffer 131072 0.0.0.0 5555

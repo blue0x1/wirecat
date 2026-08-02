@@ -1,0 +1,1 @@
+wcat relay listen:127.0.0.1:9000 pty:/bin/sh

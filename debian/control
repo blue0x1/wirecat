@@ -1,0 +1,17 @@
+Source: wirecat
+Section: net
+Priority: optional
+Maintainer: Chokri Hammedi (blue0x1) <blue0x1@users.noreply.github.com>
+Build-Depends: debhelper-compat (= 13), pkg-config, libssl-dev
+Standards-Version: 4.7.0
+Homepage: https://github.com/blue0x1/wirecat
+Rules-Requires-Root: no
+
+Package: wirecat
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: modern native stream and session utility
+ Wirecat is a native utility for connecting, listening, relaying, proxying,
+ transferring files, and bridging interactive sessions. It supports
+ TCP, UDP, IPv4, IPv6, TLS, SOCKS5, HTTP CONNECT, PTY-backed process sessions,
+ structured logging, and traffic inspection.

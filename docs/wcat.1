@@ -1,0 +1,188 @@
+.TH WCAT 1 "August 2026" "wcat 0.1.0" "User Commands"
+.SH NAME
+wcat \- native stream and session utility
+.SH SYNOPSIS
+.B wcat connect
+.RI [ OPTIONS ] " HOST PORT"
+.br
+.B wcat listen
+.RI [ OPTIONS ] " HOST PORT"
+.br
+.B wcat send
+.RI [ OPTIONS ] " FILE HOST PORT"
+.br
+.B wcat recv
+.RI [ OPTIONS ] " FILE HOST PORT"
+.br
+.B wcat relay
+.RI [ OPTIONS ] " LEFT RIGHT"
+.br
+.B wcat broker
+.RI [ OPTIONS ] " HOST PORT"
+.br
+.B wcat proxy
+.RI [ OPTIONS ] " HOST PORT"
+.br
+.B wcat --version
+.SH DESCRIPTION
+.B wcat
+connects, listens, relays, proxies, transfers files, and bridges local
+processes or PTY sessions to network streams.
+Version 0.1.0 is authored by Chokri Hammedi (blue0x1).
+.SH OPTIONS
+.TP
+.B --version
+Print version and author information.
+.TP
+.B \-u, --udp
+Use UDP.
+.TP
+.B \-4
+Force IPv4.
+.TP
+.B \-6
+Force IPv6.
+.TP
+.B \-k, --keep-open
+Accept sequential clients.
+.TP
+.B \-v, --verbose
+Enable verbose logging.
+.TP
+.B --json
+Emit JSON log records.
+.TP
+.B --hex
+Print traffic hex dumps.
+.TP
+.BI --timeout " SEC"
+Set connect and relay timeout.
+.TP
+.B --tls
+Enable TLS.
+.TP
+.B --quic
+Use QUIC single-stream transport for connect or listen.
+.TP
+.B --tls-verify
+Verify TLS peer certificates in client mode. This is the default.
+.TP
+.B --tls-insecure
+Disable TLS peer verification.
+.TP
+.BI --ca-file " FILE"
+Use a CA bundle for TLS peer verification.
+.TP
+.BI --sni " NAME"
+Set TLS SNI and hostname verification name.
+.TP
+.BI --alpn " NAME"
+Set TLS/QUIC ALPN. The default is wcat/1.
+.TP
+.BI --cert " FILE"
+Use a TLS server certificate.
+.TP
+.BI --key " FILE"
+Use a TLS server private key.
+.TP
+.BI --client-cert " FILE"
+Use a TLS client certificate.
+.TP
+.BI --client-key " FILE"
+Use a TLS client private key.
+.TP
+.B --require-client-cert
+Require a verified TLS client certificate in server mode. --ca-file must
+identify the CA bundle used to verify clients.
+.TP
+.BI --proxy " URL"
+Use an outbound proxy. Supported forms are socks5://host:port and
+http://host:port.
+.TP
+.BI --exec " PATH"
+Bridge a peer to a local executable.
+.TP
+.B --pty
+Allocate a POSIX PTY for --exec.
+.IP
+Interactive shell sessions should use --pty --exec PATH, including QUIC
+sessions.
+.TP
+.B --chat
+In broker mode, prefix relayed messages with a client label and escape terminal
+control bytes.
+.TP
+.B \-U, --unix
+Use Unix domain sockets. For connect, listen, and broker, HOST is the socket
+path and PORT is omitted.
+.TP
+.B --sctp
+Use SCTP stream sockets instead of TCP. Runtime support depends on the host
+kernel.
+.TP
+.B --vsock
+Use Linux AF_VSOCK stream sockets. In listen mode, HOST may be any.
+.TP
+.BI --max-clients " N"
+Set the broker client limit, from 1 to 256. The default is 64.
+.TP
+.BI --broker-buffer " N"
+Set the broker per-client output buffer in bytes. Slow clients are dropped
+when their queued output exceeds this limit.
+.TP
+.BI --allow " LIST"
+Accept only TCP peers matching the comma-separated IP/CIDR list.
+.TP
+.BI --deny " LIST"
+Reject TCP peers matching the comma-separated IP/CIDR list. Deny rules are
+evaluated before allow rules.
+.SH RELAY ENDPOINTS
+.B wcat relay
+connects two endpoints and moves bytes in both directions.
+.TP
+.B -
+Standard input/output.
+.TP
+.B stdio
+Standard input/output.
+.TP
+.BI tcp: HOST : PORT
+Open an outbound TCP connection.
+.TP
+.BI listen: HOST : PORT
+Open an inbound TCP listener and accept one peer.
+.TP
+.BI unix: PATH
+Open an outbound Unix domain socket connection.
+.TP
+.BI unix-listen: PATH
+Open an inbound Unix domain socket listener and accept one peer.
+.TP
+.BI file: PATH
+Open a read/write file endpoint, creating the file with mode 0600 if needed.
+.TP
+.BI exec: PATH
+Start a process and bridge it with pipes.
+.TP
+.BI pty: PATH
+Start a process and bridge it with a POSIX PTY.
+.SH RELAY EXAMPLES
+.nf
+wcat relay - tcp:example.com:80
+wcat relay listen:127.0.0.1:9000 tcp:10.0.0.5:22
+wcat relay unix-listen:/tmp/wcat.sock exec:/usr/bin/tee
+wcat relay - exec:/usr/bin/tee
+wcat relay tcp:127.0.0.1:9000 file:./capture.bin
+wcat relay listen:0.0.0.0:4444 pty:/bin/sh
+wcat proxy 127.0.0.1 3128
+.fi
+.SH EXIT STATUS
+.TP
+.B 0
+Success.
+.TP
+.B 1
+Runtime or network failure.
+.TP
+.B 2
+Invalid command-line usage.

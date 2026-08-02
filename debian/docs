@@ -1,0 +1,8 @@
+README.md
+SECURITY.md
+RELEASE.md
+docs/architecture.md
+docs/json-logging.md
+docs/fuzzing.md
+docs/reproducible-builds.md
+docs/wcat.1.md

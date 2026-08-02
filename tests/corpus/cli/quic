@@ -1,0 +1,1 @@
+wcat connect --quic --alpn h3 --tls-insecure 127.0.0.1 443
