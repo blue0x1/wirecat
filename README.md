@@ -132,6 +132,7 @@ Common options:
 -4                         force IPv4
 -6                         force IPv6
 -k, --keep-open            accept sequential clients
+--multi                    accept concurrent listen sessions with prompt control
 -v, --verbose              verbose logging
 --json                     structured JSON logs
 --hex                      hex dump traffic
@@ -155,7 +156,7 @@ Common options:
 --proxy URL                socks5://host:port or http://host:port
 --exec PATH                bridge peer to process
 --pty                      allocate PTY for --exec
---max-clients N            broker client limit, 1-256 (default 64)
+--max-clients N            broker/multi client limit, 1-256 (default 64)
 --broker-buffer N          broker per-client output buffer bytes
 --allow LIST               accept only IP/CIDR peers in comma list
 --deny LIST                reject IP/CIDR peers in comma list
@@ -170,6 +171,34 @@ wcat connect example.com 80
 wcat --version
 wcat listen 0.0.0.0 4444
 wcat listen --keep-open 0.0.0.0 4444
+```
+
+Multi-client listen mode:
+
+```sh
+wcat listen --multi 0.0.0.0 4444
+wcat listen --multi --max-clients 16 0.0.0.0 4444
+```
+
+In `--multi` mode, stdin targets the active peer. Lines beginning with `:` are
+handled by the local control prompt:
+
+```text
+:help                         show multi command help
+:sessions, :s                 list connected sessions
+:use N, :u N                  make session N active
+:next, :n                     switch to the next session
+:prev, :p                     switch to the previous session
+:info N, :i N                 show session state, peer, and traffic counters
+:rename N NAME                assign a display name to session N
+:attach [N], :at N            attach stdin directly to session N
+:detach, :back, back          leave attached mode
+Ctrl-]                        leave attached mode
+:send N TEXT                  send one line to session N
+:all TEXT, :a TEXT            broadcast one line to all sessions
+:kill N, :k N                 close session N
+:clear, :c                    clear the prompt screen
+:quit, :q                     stop the multi listener
 ```
 
 TLS and QUIC:

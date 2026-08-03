@@ -142,6 +142,64 @@ sessions.
 : Reject TCP peers matching the comma-separated IP/CIDR list. Deny rules are
   evaluated before allow rules.
 
+## MULTI-LISTEN CONTROL
+
+`wcat listen --multi [OPTIONS] HOST PORT` accepts multiple concurrent raw stream
+sessions. Standard input sends lines to the active session. Lines beginning with
+`:` are handled by the local control prompt.
+
+Control prompt syntax:
+
+`:help`
+: Show multi command help.
+
+`:sessions`, `:s`
+: List connected sessions.
+
+`:use N`, `:u N`
+: Make session `N` active.
+
+`:next`, `:n`
+: Switch to the next connected session.
+
+`:prev`, `:p`
+: Switch to the previous connected session.
+
+`:info N`, `:i N`
+: Show session state, peer address, and traffic counters.
+
+`:rename N NAME`
+: Assign a display name to session `N`.
+
+`:attach [N]`, `:at N`
+: Attach standard input directly to session `N`, or to the active session when
+  no session id is provided.
+
+`:detach`, `:back`, `back`, `Ctrl-]`
+: Leave attached mode and return to the multi prompt.
+
+`:send N TEXT`
+: Send one line of text to session `N`.
+
+`:all TEXT`, `:a TEXT`
+: Broadcast one line of text to all connected sessions.
+
+`:kill N`, `:k N`
+: Close session `N`.
+
+`:clear`, `:c`
+: Clear the prompt screen.
+
+`:quit`, `:q`
+: Stop the multi listener.
+
+Examples:
+
+```sh
+wcat listen --multi 0.0.0.0 4444
+wcat listen --multi --max-clients 16 0.0.0.0 4444
+```
+
 ## RELAY ENDPOINTS
 
 `wcat relay [OPTIONS] LEFT RIGHT` connects two endpoints and moves bytes in both

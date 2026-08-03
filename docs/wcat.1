@@ -140,6 +140,69 @@ Accept only TCP peers matching the comma-separated IP/CIDR list.
 .BI --deny " LIST"
 Reject TCP peers matching the comma-separated IP/CIDR list. Deny rules are
 evaluated before allow rules.
+.SH MULTI-LISTEN CONTROL
+.B wcat listen --multi [OPTIONS] HOST PORT
+accepts multiple concurrent raw stream sessions. Standard input sends lines to
+the active session. Lines beginning with
+.B :
+are handled by the local control prompt.
+.PP
+Control prompt syntax:
+.TP
+.B :help
+Show multi command help.
+.TP
+.BR :sessions ", " :s
+List connected sessions.
+.TP
+.BR ":use N" ", " ":u N"
+Make session
+.B N
+active.
+.TP
+.BR :next ", " :n
+Switch to the next connected session.
+.TP
+.BR :prev ", " :p
+Switch to the previous connected session.
+.TP
+.BR ":info N" ", " ":i N"
+Show session state, peer address, and traffic counters.
+.TP
+.B ":rename N NAME"
+Assign a display name to session
+.BR N .
+.TP
+.BR ":attach [N]" ", " ":at N"
+Attach standard input directly to session
+.BR N ,
+or to the active session when no session id is provided.
+.TP
+.BR :detach ", " :back ", " back ", " Ctrl-]
+Leave attached mode and return to the multi prompt.
+.TP
+.B ":send N TEXT"
+Send one line of text to session
+.BR N .
+.TP
+.BR ":all TEXT" ", " ":a TEXT"
+Broadcast one line of text to all connected sessions.
+.TP
+.BR ":kill N" ", " ":k N"
+Close session
+.BR N .
+.TP
+.BR :clear ", " :c
+Clear the prompt screen.
+.TP
+.BR :quit ", " :q
+Stop the multi listener.
+.PP
+Examples:
+.EX
+wcat listen --multi 0.0.0.0 4444
+wcat listen --multi --max-clients 16 0.0.0.0 4444
+.EE
 .SH RELAY ENDPOINTS
 .B wcat relay
 connects two endpoints and moves bytes in both directions.
