@@ -320,6 +320,24 @@ grep 'multi-b' "$TMPDIR/multi.out" >/dev/null || fail "multi session b"
 grep '\[session' "$TMPDIR/multi.out" >/dev/null || fail "multi session prefix"
 ok "multi listen sessions"
 
+(
+    sleep 0.4
+    printf ':rename 1 demo\n'
+    printf ':info\n'
+    printf ':i\n'
+    sleep 1.5
+    printf ':quit\n'
+) | "$WCAT" listen --multi --max-clients 4 127.0.0.1 46125 >"$TMPDIR/multi.commands.out" 2>"$TMPDIR/multi.commands.err" &
+multicmdpid=$!
+PIDS="$PIDS $multicmdpid"
+sleep 0.2
+(sleep 0.7; printf 'renamed-output\n'; sleep 0.2) | "$WCAT" connect --timeout 3 127.0.0.1 46125 >"$TMPDIR/multi.commands.client" 2>"$TMPDIR/multi.commands.client.err" || true
+wait "$multicmdpid" || true
+grep 'renamed session 1' "$TMPDIR/multi.commands.err" >/dev/null || fail "multi rename command"
+grep 'session.*1.*demo' "$TMPDIR/multi.commands.err" >/dev/null || fail "multi info active session"
+grep '\[session1 demo ' "$TMPDIR/multi.commands.out" >/dev/null || fail "multi renamed output prefix"
+ok "multi commands"
+
 "$WCAT" listen --multi --max-clients 4 127.0.0.1 46124 </dev/null >"$TMPDIR/multi.http.out" 2>"$TMPDIR/multi.http.err" &
 multihttppid=$!
 PIDS="$PIDS $multihttppid"

@@ -844,11 +844,20 @@ static void multi_handle_input_line(multi_session *sessions, int max_sessions,
             }
             return;
         }
-        if (strncmp(command, ":info ", 6) == 0 || strncmp(command, ":i ", 3) == 0) {
+        if (strcmp(command, ":info") == 0 || strcmp(command, ":i") == 0 ||
+            strncmp(command, ":info ", 6) == 0 || strncmp(command, ":i ", 3) == 0) {
             unsigned int id;
-            const char *arg = command[1] == 'i' && command[2] == ' ' ? command + 3 : command + 6;
+            const char *arg = NULL;
 
-            if (multi_parse_id_arg(arg, &id, NULL) == 0) {
+            if (strcmp(command, ":info") == 0 || strcmp(command, ":i") == 0) {
+                id = *active_id;
+            } else {
+                arg = command[1] == 'i' && command[2] == ' ' ? command + 3 : command + 6;
+                if (multi_parse_id_arg(arg, &id, NULL) < 0) {
+                    id = 0;
+                }
+            }
+            if (id != 0) {
                 multi_print_info(sessions, max_sessions, *active_id, id);
             } else {
                 const int color = isatty(STDERR_FILENO);
@@ -1482,8 +1491,9 @@ static int multi_write_output(multi_session *session, const unsigned char *buf,
 
         if (session->line_start) {
             char prefix[192];
-            int n = snprintf(prefix, sizeof(prefix), "[session%u %s:%s] ",
-                             session->id, session->host, session->port);
+            int n = snprintf(prefix, sizeof(prefix), "[session%u %s %s:%s] ",
+                             session->id, multi_session_label(session),
+                             session->host, session->port);
 
             if (n < 0 || (size_t)n >= sizeof(prefix) ||
                 wcat_full_write(STDOUT_FILENO, prefix, (size_t)n) != n) {
